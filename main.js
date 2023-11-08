@@ -10,8 +10,8 @@ let currentProxyUrl
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 900,
+    height: 650,
     webPreferences: {
       contextIsolation: false,
       preload: path.join(__dirname, 'preload.js')
@@ -32,7 +32,7 @@ function createWindow () {
 let nodeProcess
 
 const startNodeProcess = () => {
-  nodeProcess = spawn('node', ['mock-node/bin/www']);
+  nodeProcess = spawn('node', ['server.js']);
 
   nodeProcess.stdout.on('data', (data) => {
     console.log(`🐛🐛🐛 Node.js Server Output: ${data}`);
@@ -81,12 +81,34 @@ ipcMain.on('change-proxy-ip', (event, message) => {
   currentProxyUrl = message
   // 替换proxyUrl
   try {
-    fs.writeFileSync(`${__dirname}/mock-node/public/env.proxy.ip`, message, 'utf8');
+    fs.writeFileSync(`${__dirname}/public/env.proxy.ip`, message, 'utf8');
   } catch (err) {
     console.error('写文件时出错:', err);
   }
   restartNodeProcess()
 });
+
+ipcMain.on('api-mock-reset', (event, message) => {
+  if (message) {
+    try {
+      const data = {
+        "/mes-manufacture-report/scanLotCode": "ok"
+      }
+      fs.writeFileSync(`${__dirname}/public/router-${message}.json`, JSON.stringify(data, null, 2), 'utf8');
+      restartNodeProcess()
+    }  catch (err) {
+      console.error('写文件时出错:', err);
+    }
+  }
+})
+
+ipcMain.on('api-mock-restart', (event, message) => {
+  if (message) restartNodeProcess()
+})
+
+// 修改接口消息 get post
+// 重置
+// 关于接口校验
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.

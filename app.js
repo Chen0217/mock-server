@@ -3,14 +3,21 @@ var express = require('express');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const cors = require('cors')
 const fs = require('fs')
+var bodyParser = require('body-parser')
 
 var app = express();
 
 var mockRouter = require('./routes/mock');
+var serverRouter = require('./routes/server')
 // 允许跨域
 app.use(cors())
 
+// body-parser
+app.use(bodyParser.json({ limit: '50mb' }))
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
+
 app.use('/api/mock', mockRouter);
+app.use('/server', serverRouter);
 
 let proxyUrl
 
