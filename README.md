@@ -25,7 +25,7 @@ This is a minimal Electron application for resolve the request is invalid !!!
 ```
 
 - then you will see this following window 
-![home](./readme/doc1.png)
+![home](public/doc1.png)
 
 #### 功能介绍
 * 代理地址顾名思义，编辑之后点击Apply即生效
