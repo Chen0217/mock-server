@@ -1,3 +1,8 @@
 {
-  "/mes-mock-server/example": "ok"
+  "/mes-mock-server/example": {
+    "status": true,
+    "code": "200",
+    "message": "success",
+    "data": "ok"
+  }
 }

@@ -23,7 +23,7 @@ fs.readFile(`${__dirname}/../public/router-post.json`, 'utf8', (err, data) => {
     Object.keys(jsonObject).map(key => {
       router.post(key, async (req, res) => {
         await timer(1000)
-        res.json(response.success(jsonObject[key]))
+        res.json(jsonObject[key])
       })
     })
   } catch (e) {
@@ -41,7 +41,7 @@ fs.readFile(`${__dirname}/../public/router-get.json`, 'utf8', (err, data) => {
     Object.keys(jsonObject).map(key => {
       router.get(key, async (req, res) => {
         await timer(1000)
-        res.json(response.success(jsonObject[key]))
+        res.json(jsonObject[key])
       })
     })
   } catch (e) {
