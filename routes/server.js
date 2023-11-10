@@ -1,0 +1,35 @@
+var express = require('express');
+var router = express.Router();
+const response = require('../utils/response')
+const fs = require('fs')
+
+router.get('/apiList', async (req, res) => {
+  try {
+    const apiJson  = fs.readFileSync(`${__dirname}/../public/router-post.json`, 'utf8');
+    const apiMap = JSON.parse(apiJson)
+    const data = Object.keys(JSON.parse(apiJson)).map(key => {
+      return {
+        url: key,
+        response: apiMap[key]
+      }
+    })
+    res.json(response.success(data))
+  } catch (err) {
+    res.json(response.fail(500, err))
+  }
+})
+
+router.post('/api/add', async (req, res) => {
+  try {
+    const { method, responseMap, url } = req.body || {}
+    const apiJson  = fs.readFileSync(`${__dirname}/../public/router-post.json`, 'utf8');
+    const JSONApi = JSON.parse(apiJson)
+    JSONApi[url] = responseMap
+    fs.writeFileSync(`${__dirname}/../public/router-${method}.json`, JSON.stringify(JSONApi, null, 2), 'utf8');
+    res.json(response.success())
+  }  catch (err) {
+    res.json(response.fail(500, err))
+  }
+})
+
+module.exports = router;

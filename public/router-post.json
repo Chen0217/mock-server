@@ -1,0 +1,37 @@
+{
+  "/mes-mock-server/example": {
+    "status": true,
+    "code": "200",
+    "message": "success",
+    "data": "ok"
+  },
+  "/mes-device/acquisitionEventTriggerRecord/findIotDataAndFilterByTraceProcessConfig": {
+    "code": 200,
+    "data": [
+      {
+        "acqTime": "2023-11-10T02:37:50.860Z",
+        "businessFunctionCode": "string",
+        "businessFunctionName": "string",
+        "deviceId": 0,
+        "iotName": "string",
+        "val": "string",
+        "varCode": "string",
+        "varName": "string"
+      },
+      {
+        "acqTime": "2023-11-10T02:37:50.860Z",
+        "businessFunctionCode": "string",
+        "businessFunctionName": "试试",
+        "deviceId": 0,
+        "iotName": "string",
+        "val": "123",
+        "varCode": "string",
+        "varName": "string"
+      }
+    ],
+    "erroRlevel": 0,
+    "errorDetail": "string",
+    "message": "string",
+    "timestamp": 0
+  }
+}
