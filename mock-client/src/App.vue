@@ -74,7 +74,7 @@ onMounted(() => {
           getUpdateProxyUrl(data)
           setTimeout(() => {
             getApiList()
-          }, 200);
+          }, 500);
         }
       } catch (e) {
         console.warn(e)

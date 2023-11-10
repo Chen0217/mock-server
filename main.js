@@ -93,10 +93,10 @@ ipcMain.on('api-mock-reset', (event, message) => {
     try {
       const data = {
         "/mes-mock-server/example": {
-          "status": true,
-          "code": "200",
-          "message": "success",
-          "data": "ok"
+            "status": true,
+            "code": "200",
+            "message": "success",
+            "data": "ok"
         }
       }
       fs.writeFileSync(`${__dirname}/public/router-${message}.json`, JSON.stringify(data, null, 2), 'utf8');

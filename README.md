@@ -25,28 +25,26 @@ This is a minimal Electron application for resolve the request is invalid !!!
 ```
 
 - then you will see this following window 
-![home](public/doc1.png)
+![home](doc1.png)
 
-#### 功能介绍
-* 代理地址顾名思义，编辑之后点击Apply即生效
-* Reset 会将你所添加的mock接口全部清空
-* Add/Edit 中输入需要代理的url和response `response必须为合法的JSON字符串`
-
+- when request is invalid, eg.`/mes-manufacture-report/IPC/V2/scanLotCode`; Add url `/mock/mes-manufacture-report/IPC/V2/scanLotCode` and response`{ "code": 200, ...}`[must be JSON]
 ```javascript
-// 如图有一个默认的mock接口: /mes-mock-server/example
-// 在DFS中使用办法
-export function testApi(data) {
+// request
+export function manufactureReportScanLotCode(data) {
   return request({
-    url: `/mock/mes-mock-server/example`,
+    url: `/mock/mes-manufacture-report/IPC/V2/scanLotCode`,
     method: 'POST',
     data
   })
 }
-// 你将得到如下返回
+// response
 {
-    "status": true,
-    "code": "200",
-    "message": "success",
-    "data": "ok"
+    "code": 200,
+    ...
 }
 ```
+
+## Function introduction
+* The proxy address connects directly to the specified destination
+* Reset will reset all the mock url
+* Add/Edit must be input url and response `response must be legitimate JSON string`
