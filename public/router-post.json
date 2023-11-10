@@ -4,37 +4,5 @@
     "code": "200",
     "message": "success",
     "data": "ok"
-  },
-  "/mes-plan/mock": {
-    "code": 210,
-    "data": {
-      "audit": 0,
-      "confirmStatus": 0,
-      "createId": 0,
-      "createName": "string",
-      "createTime": "2023-11-09T01:56:21.193Z",
-      "dutyId": "string",
-      "dutyName": "string",
-      "endTime": "2023-11-09T01:56:21.193Z",
-      "id": 0,
-      "inventoryName": "string",
-      "inventoryOperateType": 0,
-      "inventoryType": 0,
-      "isDel": 0,
-      "isEnable": 0,
-      "locationId": "string",
-      "locationName": "string",
-      "startTime": "2023-11-09T01:56:21.193Z",
-      "tails": {},
-      "tenementId": 0,
-      "updateId": 0,
-      "updateName": "string",
-      "updateTime": "2023-11-09T01:56:21.193Z",
-      "version": 0
-    },
-    "erroRlevel": 0,
-    "errorDetail": "string",
-    "message": "string",
-    "timestamp": 0
   }
 }
