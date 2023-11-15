@@ -4,7 +4,8 @@
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {
-    "dev": "electron main.js"
+    "dev": "electron main.js",
+    "start": "electron main.js"
   },
   "repository": "https://github.com/chen0217/mock-server",
   "keywords": [
