@@ -32,4 +32,23 @@ router.post('/api/add', async (req, res) => {
   }
 })
 
+router.get('/api/singleProxy', async(req, res) => {
+  try {
+    const singleProxy  = fs.readFileSync(`${__dirname}/../public/single-proxy.json`, 'utf8');
+    const singleProxyMap = JSON.parse(singleProxy)
+    res.json(response.success(singleProxyMap))
+  } catch (err) {
+    res.json(response.fail(500, err))
+  }
+})
+router.post('/api/singleProxy', async (req, res) => {
+  try {
+    const { singleProxyMap } = req.body || {}
+    fs.writeFileSync(`${__dirname}/../public/single-proxy.json`, JSON.stringify(singleProxyMap, null, 2), 'utf8');
+    res.json(response.success())
+  }  catch (err) {
+    res.json(response.fail(500, err))
+  }
+})
+
 module.exports = router;

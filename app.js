@@ -3,6 +3,7 @@ var express = require('express');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const cors = require('cors')
 const fs = require('fs')
+const utils = require('./utils/index')
 // var bodyParser = require('body-parser')
 
 var app = express();
@@ -13,18 +14,34 @@ var serverRouter = require('./routes/server')
 app.use(cors())
 app.use('/api/mock', mockRouter);
 
+// 单个服务代理
+let singleProxy = {}
+try {
+  singleProxy = JSON.parse(fs.readFileSync(`${__dirname}/public/single-proxy.json`, 'utf8'))
+} catch (err) {
+  console.error('读取单服务代理配置时出错:', err);
+  singleProxy = {}
+}
+Object.keys(singleProxy).forEach(key => {
+  if (!singleProxy[key]) return
+  if (!utils.isString(singleProxy[key])) return
+  if (!utils.isHttpUrl(singleProxy[key])) return
+  const rewriteKey = "^/api/" + key
+  const pathRewrite = {}
+  pathRewrite[rewriteKey] = ""
+  app.use(`/api/${key}`, createProxyMiddleware({ target: singleProxy[key], changeOrigin: true, pathRewrite: pathRewrite}));
+})
+// 全量代理服务器
 let proxyUrl
-
 try {
   proxyUrl = fs.readFileSync(`${__dirname}/public/env.proxy.ip`, 'utf8');
 } catch (err) {
-  console.error('读取文件时出错:', err);
+  console.error('读取全量代理配置时出错:', err);
 }
-
-// 代理服务器
 app.use('/api', createProxyMiddleware({ target: proxyUrl, changeOrigin: true, pathRewrite: {
   "^/api": ""
 } }));
+// 内置服务路由
 app.use(express.json())
 app.use('/server', serverRouter);
 
