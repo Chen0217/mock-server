@@ -4,5 +4,15 @@
     "code": "200",
     "message": "success",
     "data": "ok"
+  },
+  "/mes-warehouse/preMaterial/storageHistory": {
+    "code": 200,
+    "data": {
+      "total": 30,
+      "list": [
+        {},
+        {}
+      ]
+    }
   }
 }
