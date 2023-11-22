@@ -21,7 +21,7 @@ This is a minimal Electron application for resolve the request is invalid !!!
   # Install dependencies
   npm install
   # Run the app
-  npm run start
+  npm run dev
 ```
 
 - then you will see this following window 
