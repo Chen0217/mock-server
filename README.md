@@ -44,7 +44,13 @@ export function manufactureReportScanLotCode(data) {
 }
 ```
 
+- single proxy
+  * input server: `mes-warehouse`
+  * input target: `http://192.16.8.92:9111`
+  * click `Confirm` button
+
 ## Function introduction
 * The proxy address connects directly to the specified destination
+* The single proxy can be connect local server for fastest develop
 * Reset will reset all the mock url
 * Add/Edit must be input url and response `response must be legitimate JSON string`
