@@ -105,6 +105,7 @@ onMounted(() => {
           }, 500);
         }
       } catch (e) {
+        proxyLoading.value = false
         console.warn(e)
       }
     });
