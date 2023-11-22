@@ -14,5 +14,57 @@
         {}
       ]
     }
+  },
+  "/mes-device/acquisitionEventTriggerRecord/findPage": {
+    "code": 200,
+    "data": {
+      "endRow": 0,
+      "hasNextPage": true,
+      "hasPreviousPage": true,
+      "isFirstPage": true,
+      "isLastPage": true,
+      "list": [
+        {
+          "acqVarCode": "string",
+          "acqVarName": "string",
+          "businessFunctionCode": "string",
+          "businessFunctionName": "string",
+          "description": "string",
+          "deviceId": 0,
+          "deviceNameStr": "string",
+          "downCode": "string",
+          "id": 0,
+          "isDel": 0,
+          "name": "string",
+          "planId": 0,
+          "primaryType": "string",
+          "ruleSnapId": 0,
+          "secondaryType": "string",
+          "serialNum": "string",
+          "tenementId": 0,
+          "tertiaryType": "string",
+          "triggerTime": "2023-11-22T02:05:18.420Z",
+          "upCode": "string"
+        }
+      ],
+      "navigateFirstPage": 0,
+      "navigateLastPage": 0,
+      "navigatePages": 0,
+      "navigatepageNums": [
+        0
+      ],
+      "nextPage": 0,
+      "pageNum": 0,
+      "pageSize": 0,
+      "pages": 0,
+      "prePage": 0,
+      "size": 0,
+      "startRow": 0,
+      "total": 0
+    },
+    "erroRlevel": 0,
+    "errorDetail": "string",
+    "message": "string",
+    "timestamp": 0
   }
 }
