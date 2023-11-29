@@ -84,7 +84,7 @@ import { ref, onMounted, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 const apiUrl = `http://localhost:3000`
 const proxyTarget = ref('')
-const proxyLoading = ref(false)
+const proxyLoading = ref(true)
 
 const getUpdateProxyUrl = (data) => {
   proxyTarget.value = data?.proxyUrl
@@ -101,8 +101,10 @@ const getProxyUrl = () => {
 }
 
 const init = () => {
-  getProxyUrl()
-  getApiList()
+  setTimeout(() => {
+    getProxyUrl()
+    getApiList()
+  }, 200)
 }
 
 onMounted(() => {
