@@ -1,1 +1,6 @@
-{}
+{
+  "mes-manufacture-report": {
+    "target": "http://172.29.2.109:9111",
+    "open": false
+  }
+}

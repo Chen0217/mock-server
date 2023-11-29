@@ -23,13 +23,14 @@ try {
   singleProxy = {}
 }
 Object.keys(singleProxy).forEach(key => {
-  if (!singleProxy[key]) return
-  if (!utils.isString(singleProxy[key])) return
-  if (!utils.isHttpUrl(singleProxy[key])) return
+  if (!(singleProxy[key] && singleProxy[key].target)) return
+  if (!singleProxy[key].open) return
+  if (!utils.isString(singleProxy[key].target)) return
+  if (!utils.isHttpUrl(singleProxy[key].target)) return
   const rewriteKey = "^/api/" + key
   const pathRewrite = {}
   pathRewrite[rewriteKey] = ""
-  app.use(`/api/${key}`, createProxyMiddleware({ target: singleProxy[key], changeOrigin: true, pathRewrite: pathRewrite}));
+  app.use(`/api/${key}`, createProxyMiddleware({ target: singleProxy[key].target, changeOrigin: true, pathRewrite: pathRewrite}));
 })
 // 全量代理服务器
 let proxyUrl

@@ -3,6 +3,15 @@ var router = express.Router();
 const response = require('../utils/response')
 const fs = require('fs')
 
+router.get('/global/proxy', async(req, res) => {
+  try {
+    const proxyUrl  = fs.readFileSync(`${__dirname}/../public/env.proxy.ip`, 'utf8');
+    res.json(response.success(proxyUrl))
+  } catch (err) {
+    res.json(response.fail(500, err))
+  }
+})
+
 router.get('/apiList', async (req, res) => {
   try {
     const apiJson  = fs.readFileSync(`${__dirname}/../public/router-post.json`, 'utf8');
