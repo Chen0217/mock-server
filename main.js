@@ -10,7 +10,7 @@ let currentProxyUrl
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 900,
+    width: 1000,
     height: 650,
     webPreferences: {
       contextIsolation: false,

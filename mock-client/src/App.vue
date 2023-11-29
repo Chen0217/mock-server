@@ -45,7 +45,7 @@
         </span>
       </template>
     </el-dialog>
-    <el-dialog v-model="singleProxyVisible" title="单服务代理" :width="700">
+    <el-dialog v-model="singleProxyVisible" title="单服务代理" :width="900">
       <div class="singleProxyUtils">
         <el-button type="primary" @click="addSingleProxy">Add</el-button>
         <el-button type="danger" @click="clearSingleProxy">Clear</el-button>
@@ -58,7 +58,10 @@
           </div>
           <div class="target">
             <span class="label">目标地址：</span>
-            <el-input v-model="item.target" style="width: 300px;"></el-input>
+            <el-input v-model="item.target" style="width: 350px;"></el-input>
+          </div>
+          <div class="switch">
+            <el-switch v-model="item.open" />
           </div>
           <label for="" class="delete" @click="delSingleProxy(index)">删除</label>
         </div>
@@ -80,7 +83,7 @@ import axios from 'axios'
 import { ref, onMounted, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 const apiUrl = `http://localhost:3000`
-const proxyTarget = ref('http://guava.ob.shuyilink.com')
+const proxyTarget = ref('')
 const proxyLoading = ref(false)
 
 const getUpdateProxyUrl = (data) => {
@@ -88,7 +91,17 @@ const getUpdateProxyUrl = (data) => {
   proxyLoading.value = false
 }
 
+const getProxyUrl = () => {
+  axios.get(`${apiUrl}/server/global/proxy`).then(res => {
+    if (+res.data?.code === 200) {
+      proxyTarget.value = res.data.data
+      proxyLoading.value = false
+    }
+  })
+}
+
 const init = () => {
+  getProxyUrl()
   getApiList()
 }
 
@@ -102,6 +115,7 @@ onMounted(() => {
           getUpdateProxyUrl(data)
           setTimeout(() => {
             getApiList()
+            getProxyUrl()
           }, 500);
         }
       } catch (e) {
@@ -206,7 +220,8 @@ const openSingleProxy = () => {
       singleProxyList.value = Object.keys(resMap).map(key => {
         return {
           server: key,
-          target: resMap[key]
+          target: resMap[key].target,
+          open: resMap[key].open
         }
       })
       singleProxyVisible.value = true
@@ -219,7 +234,7 @@ const delSingleProxy = (index) => {
   singleProxyList.value.splice(index, 1)
 }
 const addSingleProxy = () => {
-  singleProxyList.value.push({server: 'mes-xxxx', target: ''})
+  singleProxyList.value.push({server: 'mes-xxxx', target: '', open: false})
 }
 const clearSingleProxy = () => {
   singleProxyList.value = []
@@ -230,7 +245,7 @@ const submitSingleProxy = () => {
     const key = d.server.replace(/\s/g, '')
     const val = d.target.replace(/\s/g, '')
     if (!val) return
-    filterRes[key] = val
+    filterRes[key] = {target: val, open: d.open}
   })
   axios.post(`${apiUrl}/server/api/singleProxy`, {singleProxyMap: filterRes}).then(res => {
     if (+res.data?.code === 200) {
@@ -283,8 +298,9 @@ const submitSingleProxy = () => {
       }
     }
     .responseView{
-      width: 450px;
-      max-width: 450px;
+      margin-left: 20px;
+      width: 500px;
+      max-width: 500px;
       padding: 10px;
       background: #fff;
       border: 1px solid #ddd;
@@ -320,6 +336,9 @@ const submitSingleProxy = () => {
         }
         display: flex;
         align-items: center;
+      }
+      .switch{
+        margin-left: 10px;
       }
     }
   }
