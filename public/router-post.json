@@ -5,66 +5,54 @@
     "message": "success",
     "data": "ok"
   },
-  "/mes-warehouse/preMaterial/storageHistory": {
-    "code": 200,
+  "/mes-main-data/web/stationInfo/stationDTO/1/30": {
+    "code": "200",
+    "message": "操作成功",
     "data": {
-      "total": 30,
-      "list": [
-        {},
-        {}
-      ]
-    }
-  },
-  "/mes-device/acquisitionEventTriggerRecord/findPage": {
-    "code": 200,
-    "data": {
-      "endRow": 0,
-      "hasNextPage": true,
-      "hasPreviousPage": true,
-      "isFirstPage": true,
-      "isLastPage": true,
+      "total": "77",
       "list": [
         {
-          "acqVarCode": "string",
-          "acqVarName": "string",
-          "businessFunctionCode": "string",
-          "businessFunctionName": "string",
-          "description": "string",
-          "deviceId": 0,
-          "deviceNameStr": "string",
-          "downCode": "string",
-          "id": 0,
-          "isDel": 0,
-          "name": "string",
-          "planId": 0,
-          "primaryType": "string",
-          "ruleSnapId": 0,
-          "secondaryType": "string",
-          "serialNum": "string",
-          "tenementId": 0,
-          "tertiaryType": "string",
-          "triggerTime": "2023-11-22T02:05:18.420Z",
-          "upCode": "string"
+          "id": "1633008707426193408",
+          "tenementId": "1130021",
+          "createTime": "2023-03-07 15:36:30",
+          "locationId": "1524628008995012608",
+          "locationName": "TEST-1130021|1地点车间1",
+          "locationLevelStr": "TEST-1130021|1地点事业部1>TEST-1130021|1地点车间1",
+          "stationCode": "YYCode-6483721",
+          "stationName": "YYCode-6483721",
+          "stationType": "1",
+          "acquisitionIp": null,
+          "acquisitionPort": null,
+          "stationIp": null,
+          "bandingObjId": "1633008691202625536",
+          "bandingObjName": "TEST-1130021|1设备名称1",
+          "bandingObjWorksiteCode": "YYCode-6483721",
+          "bandingObjUniqueCode": "SB1280001191114"
         }
       ],
-      "navigateFirstPage": 0,
-      "navigateLastPage": 0,
-      "navigatePages": 0,
+      "pageNum": "1",
+      "pageSize": "30",
+      "size": "30",
+      "startRow": "1",
+      "endRow": "30",
+      "pages": "3",
+      "prePage": "0",
+      "nextPage": "2",
+      "isFirstPage": true,
+      "isLastPage": false,
+      "hasPreviousPage": false,
+      "hasNextPage": true,
+      "navigatePages": "8",
       "navigatepageNums": [
-        0
+        "1",
+        "2",
+        "3"
       ],
-      "nextPage": 0,
-      "pageNum": 0,
-      "pageSize": 0,
-      "pages": 0,
-      "prePage": 0,
-      "size": 0,
-      "startRow": 0,
-      "total": 0
+      "navigateFirstPage": "1",
+      "navigateLastPage": "3"
     },
-    "erroRlevel": 0,
-    "errorDetail": "string",
-    "message": "string",
-    "timestamp": 0
+    "timestamp": "1709360269869",
+    "erroRlevel": "2",
+    "errorDetail": "操作成功"
   }
 }
