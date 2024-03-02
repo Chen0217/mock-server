@@ -27,12 +27,12 @@ This is a minimal Electron application for resolve the request is invalid !!!
 - then you will see this following window 
 ![home](doc1.png)
 
-- when request is invalid, eg.`/mes-manufacture-report/IPC/V2/scanLotCode`; Add url `/mock/mes-manufacture-report/IPC/V2/scanLotCode` and response`{ "code": 200, ...}`[must be JSON]
+- when request is invalid, eg.`/mes-manufacture-report/IPC/V2/scanLotCode`; Add url `/mes-manufacture-report/IPC/V2/scanLotCode` and response`{ "code": 200, ...}`[must be JSON]
 ```javascript
 // request
 export function manufactureReportScanLotCode(data) {
   return request({
-    url: `/mock/mes-manufacture-report/IPC/V2/scanLotCode`,
+    url: `/mes-manufacture-report/IPC/V2/scanLotCode`,
     method: 'POST',
     data
   })
