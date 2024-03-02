@@ -12,7 +12,8 @@ var mockRouter = require('./routes/mock');
 var serverRouter = require('./routes/server')
 // 允许跨域
 app.use(cors())
-app.use('/api/mock', mockRouter);
+// mock优先级最高
+app.use('/api', mockRouter);
 
 // 单个服务代理
 let singleProxy = {}
