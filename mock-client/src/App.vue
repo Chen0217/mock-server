@@ -11,7 +11,12 @@
     </header>
     <div class="apiList">
       <div class="apis">
-        <div class="api" v-for="api in apiConfig.list" :key="api.url" :class="{active: api.active}" @click="clickApi(api)">
+        <div
+          class="api"
+          v-for="api in apiConfig.list"
+          :key="api.url"
+          :class="`${api.method} ${api.active ? 'active' : ''}`"
+          @click="clickApi(api)">
           {{api.url}}
         </div>
       </div>
@@ -19,14 +24,14 @@
         <code v-html="responseView"></code>
       </div>
     </div>
-    <el-dialog v-model="addDialogVisible" title="新增" :width="700">
+    <el-dialog v-model="addDialogVisible" :title="formTitle" :width="700">
       <el-form ref="addFormRef" v-if="addDialogVisible" :model="addForm" :rules="rules" label-width="100px">
         <el-form-item label="method">
           <el-radio-group v-model="addForm.method" prop="method">
-            <el-radio label="get" disabled>GET</el-radio>
-            <el-radio label="put" disabled>PUT</el-radio>
+            <el-radio label="get">GET</el-radio>
+            <el-radio label="put">PUT</el-radio>
             <el-radio label="post">POST</el-radio>
-            <el-radio label="delete" disabled>DELETE</el-radio>
+            <el-radio label="delete">DELETE</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="url" prop="url">
@@ -146,6 +151,7 @@ function getApiList() {
         return {
           url: d.url,
           response: d.response,
+          method: d.method,
           active: false
         }
       })
@@ -156,7 +162,7 @@ function getApiList() {
 const responseView = ref('')
 const clickApi = (api) => {
   apiConfig.list.forEach(d => {
-    d.active = d.url === api.url
+    d.active = (d.url === api.url && d.method === api.method)
   })
   responseView.value = JSON.stringify(api.response, null, 2)
 }
@@ -168,6 +174,7 @@ const reset = () => {
 // dialog 
 const addDialogVisible = ref(false)
 const addFormRef = ref(null)
+const formTitle = ref('新增')
 let addForm = reactive({
   method: 'post',
   url: '',
@@ -180,13 +187,17 @@ const rules = reactive({
 })
 const add = () => {
   addDialogVisible.value = true
+  formTitle.value = '新增'
   addForm.url = ''
+  addForm.method = 'post'
   addForm.response = ''
 }
 const edit = () => {
   addDialogVisible.value = true
+  formTitle.value = '编辑'
   const apiMap = apiConfig.list.find(d => d.active)
   addForm.url = apiMap?.url
+  addForm.method = apiMap?.method
   addForm.response = JSON.stringify(apiMap?.response, null, 2)
 }
 const addConfirm = async (formEl) => {
@@ -289,13 +300,31 @@ const submitSingleProxy = () => {
       .api{
         margin-bottom: 5px;
         padding: 4px 10px;
-        background: #ecf5ff;
+        background: rgba(73,204,144,.5);
         border-radius: 5px;
         color: #282828;
         cursor: pointer;
         word-break: break-all;
         &:hover, &.active{
-          background: #40b9ff;
+          background: #49cc90;
+        }
+        &.get{
+          background: rgba(97,175,254,.5);
+          &:hover, &.active{
+            background: #61affe;
+          }
+        }
+        &.put{
+          background: rgba(252,161,48,.5);
+          &:hover, &.active{
+            background: #fca130;
+          }
+        }
+        &.delete{
+          background: rgba(249,62,62,.5);
+          &:hover, &.active{
+            background: #f93e3e;
+          }
         }
       }
     }

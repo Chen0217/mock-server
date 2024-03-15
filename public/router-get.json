@@ -1,7 +1,23 @@
 {
-  "/mes-warehouse/test": {
-    "total": 12,
-    "pages": 2,
-    "list": [1, 2, 3]
+  "/mes-mock-server/example": {
+    "status": true,
+    "code": "200",
+    "message": "success",
+    "data": "ok"
+  },
+  "/mes-data-visualization/sys/release": {
+    "code": "200",
+    "message": "操作成功",
+    "data": {
+      "version": "xxxx内测版本",
+      "time": "2023.03.10 08:58:08",
+      "url": null,
+      "apps": {
+        "fe": "35554523e5e88418c086d0faae6ac7eeba8167b7",
+        "dv": "0b5825de7cfd22a5ad1c6277782aa24783305016",
+        "kb": "fad6f73e9639b09068dcf0dd69bc2919f52a2dc15"
+      }
+    },
+    "timestamp": "1710489175352"
   }
 }
