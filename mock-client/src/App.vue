@@ -8,6 +8,7 @@
       <el-button type="primary" plain @click="edit">Edit</el-button>
       <el-button @click="reset" type="danger" :loading="proxyLoading">Reset</el-button>
       <el-button type="success" @click="openSingleProxy">Single Proxy</el-button>
+      <el-button type="primary" plain @click="openWsMock">Ws Mock</el-button>
     </header>
     <div class="apiList">
       <div class="apis">
@@ -80,6 +81,34 @@
         </span>
       </template>
     </el-dialog>
+    <el-dialog v-model="wsMockVisible" title="Ws Mock" :width="900">
+      <div class="wsMockUtils">
+        <el-button type="primary" @click="updateToken">Update Token</el-button>
+        <el-tooltip :content="token">
+          <div class="status" :class="token ? 'ok' : 'no'"></div>
+        </el-tooltip>
+      </div>
+      <el-radio-group v-model="wsType" prop="method">
+        <el-radio label="web-device">设备</el-radio>
+        <el-radio label="web-productLine">产线</el-radio>
+        <el-radio label="web-stationGroup">站点组</el-radio>
+      </el-radio-group>
+      <div style="display: flex;align-items: center;margin-bottom: 10px;">
+        {{labelStr[wsType]}}：
+        <el-input v-model="ws_id" style="width: 300px;"></el-input>  
+      </div>
+      <div style="display: flex;align-items: flex-start;">
+        消息：
+        <el-input type="textarea" style="width: 700px" :rows="8" v-model="ws_data"></el-input>
+      </div>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button type="primary" @click="sendWsMock">
+            Send
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -124,6 +153,11 @@ onMounted(() => {
             getApiList()
             getProxyUrl()
           }, 500);
+        }
+        if (type === 'token' && +code === 200) {
+          // token
+          console.log(data, data?.token)
+          if (data) token.value = data?.token
         }
       } catch (e) {
         proxyLoading.value = false
@@ -269,6 +303,41 @@ const submitSingleProxy = () => {
   })
 }
 
+// ws mock
+const token = ref('')
+const wsMockVisible = ref(false)
+const wsType = ref('web-device')
+const ws_data = ref('')
+const labelStr = {
+  'web-device': '设备id',
+  'web-productLine': '站点id',
+  'web-stationGroup': '站点组id',
+}
+const ws_id = ref(null)
+const openWsMock = () => {
+  wsMockVisible.value = true
+}
+const sendWsMock = () => {
+  if (!token.value) return ElMessage.warning('请先获取token')
+  if (!ws_id.value) return ElMessage.warning('请先输入相应id')
+  if (!ws_data.value) return ElMessage.warning('请先输入要发送的消息')
+  const data = {
+    data: ws_data.value,
+    key: `${wsType.value}:${ws_id.value}`
+  }
+  axios.post(`http://guava.ob.shuyilink.com/mes-netty/message/common/send-async`, data, {
+    headers: {
+      'Authorization': `${token.value}`
+    }
+  })
+}
+const updateToken = () => {
+  axios.post(`${apiUrl}/server/api/refreshToken`).then(res => {
+    if (+res.data?.code === 200) {
+      ElMessage.success(`更新token已发送，在下一次请求中劫持`)
+    }
+  })
+}
 
 </script>
 
@@ -370,6 +439,23 @@ const submitSingleProxy = () => {
       }
       .switch{
         margin-left: 10px;
+      }
+    }
+  }
+  .wsMockUtils{
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    .status{
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      margin-left: 20px;
+      &.ok{
+        background: #49cc90;
+      }
+      &.no{
+        background: #f93e3e;
       }
     }
   }

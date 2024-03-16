@@ -100,9 +100,9 @@ ipcMain.on('api-mock-reset', (event, message) => {
         }
       }
       fs.writeFileSync(`${__dirname}/public/router-post.json`, JSON.stringify(data, null, 2), 'utf8');
-      fs.writeFileSync(`${__dirname}/public/router-get.json`, JSON.stringify(data, null, 2), 'utf8');
-      fs.writeFileSync(`${__dirname}/public/router-put.json`, JSON.stringify(data, null, 2), 'utf8');
-      fs.writeFileSync(`${__dirname}/public/router-delete.json`, JSON.stringify(data, null, 2), 'utf8');
+      fs.writeFileSync(`${__dirname}/public/router-get.json`, JSON.stringify({}, null, 2), 'utf8');
+      fs.writeFileSync(`${__dirname}/public/router-put.json`, JSON.stringify({}, null, 2), 'utf8');
+      fs.writeFileSync(`${__dirname}/public/router-delete.json`, JSON.stringify({}, null, 2), 'utf8');
       restartNodeProcess()
     }  catch (err) {
       console.error('写文件时出错:', err);

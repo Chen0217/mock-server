@@ -1,10 +1,12 @@
 var createError = require('http-errors');
 var express = require('express');
-const { createProxyMiddleware } = require('http-proxy-middleware');
+const { createProxyMiddleware, responseInterceptor } = require('http-proxy-middleware');
 const cors = require('cors')
 const fs = require('fs')
 const utils = require('./utils/index')
 // var bodyParser = require('body-parser')
+const { setTokenFlag, getTokenFlag } = require("./utils/data");
+let temp = 0 // 记录时间
 
 var app = express();
 
@@ -14,7 +16,8 @@ var serverRouter = require('./routes/server')
 app.use(cors())
 // mock服务
 app.use('/api', mockRouter);
-
+// app.use(bodyParser.json({ limit: '50mb' }))
+// app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
 // 单个服务代理
 let singleProxy = {}
 try {
@@ -40,9 +43,20 @@ try {
 } catch (err) {
   console.error('读取全量代理配置时出错:', err);
 }
-app.use('/api', createProxyMiddleware({ target: proxyUrl, changeOrigin: true, pathRewrite: {
-  "^/api": ""
-} }));
+app.use('/api', createProxyMiddleware({ 
+  target: proxyUrl,
+  changeOrigin: true,
+  onProxyReq: function(proxyReq, req, res) {
+    if (Date.now() - temp >= 6 * 60 * 1000 || getTokenFlag()) {
+      console.log(`{"type": "token", "code": "200", "data": {"token": "${req.headers?.['authorization']}"}}`);
+      temp = Date.now()
+      setTokenFlag(false)
+    }
+  },
+  pathRewrite: {
+    "^/api": ""
+  }
+}));
 // 内置服务路由
 app.use(express.json())
 app.use('/server', serverRouter);

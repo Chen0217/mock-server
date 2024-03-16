@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const response = require('../utils/response')
+const { setTokenFlag } = require("../utils/data");
 const fs = require('fs')
 
 router.get('/global/proxy', async(req, res) => {
@@ -82,6 +83,15 @@ router.post('/api/singleProxy', async (req, res) => {
   try {
     const { singleProxyMap } = req.body || {}
     fs.writeFileSync(`${__dirname}/../public/single-proxy.json`, JSON.stringify(singleProxyMap, null, 2), 'utf8');
+    res.json(response.success())
+  }  catch (err) {
+    res.json(response.fail(500, err))
+  }
+})
+
+router.post('/api/refreshToken', async (req, res) => {
+  try {
+    setTokenFlag(true)
     res.json(response.success())
   }  catch (err) {
     res.json(response.fail(500, err))

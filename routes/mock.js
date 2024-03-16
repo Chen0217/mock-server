@@ -49,6 +49,41 @@ fs.readFile(`${__dirname}/../public/router-get.json`, 'utf8', (err, data) => {
   }
 });
 
+fs.readFile(`${__dirname}/../public/router-put.json`, 'utf8', (err, data) => {
+  if (err) {
+    console.error('读取文件时发生错误:', err)
+    return
+  }
+  try {
+    const jsonObject = JSON.parse(data)
+    Object.keys(jsonObject).map(key => {
+      router.put(key, async (req, res) => {
+        await timer(1000)
+        res.json(jsonObject[key])
+      })
+    })
+  } catch (e) {
+    console.log(e)
+  }
+});
+
+fs.readFile(`${__dirname}/../public/router-delete.json`, 'utf8', (err, data) => {
+  if (err) {
+    console.error('读取文件时发生错误:', err)
+    return
+  }
+  try {
+    const jsonObject = JSON.parse(data)
+    Object.keys(jsonObject).map(key => {
+      router.delete(key, async (req, res) => {
+        await timer(1000)
+        res.json(jsonObject[key])
+      })
+    })
+  } catch (e) {
+    console.log(e)
+  }
+});
 
 
 module.exports = router;

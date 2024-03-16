@@ -6,7 +6,7 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 // import VueElectron from 'vue-electron';
-import { ElInput, ElSelect, ElButton, ElDialog, ElForm, ElFormItem, ElRadio, ElRadioGroup, ElSwitch } from 'element-plus'
+import { ElInput, ElSelect, ElButton, ElDialog, ElForm, ElFormItem, ElRadio, ElRadioGroup, ElSwitch, ElTooltip } from 'element-plus'
 import 'element-plus/dist/index.css'
 
 const app = createApp(App)
@@ -22,6 +22,7 @@ app.use(ElInput)
   .use(ElRadio)
   .use(ElRadioGroup)
   .use(ElSwitch)
+  .use(ElTooltip)
 // app.use(VueElectron)
 
 app.mount('#app')
