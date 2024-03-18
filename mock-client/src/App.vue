@@ -94,8 +94,16 @@
         <el-radio label="web-stationGroup">站点组</el-radio>
       </el-radio-group>
       <div style="display: flex;align-items: center;margin-bottom: 10px;">
-        {{labelStr[wsType]}}：
-        <el-input v-model="ws_id" style="width: 300px;"></el-input>  
+        <span v-if="wsType !== 'web-stationGroup'">设备id：</span>
+        <el-input v-if="wsType !== 'web-stationGroup'"  v-model="wsIdObj.deviceId" style="width: 200px;"></el-input>
+        <span v-if="wsType !== 'web-stationGroup'" style="margin-left: 10px;">站点id：</span>
+        <el-input v-if="wsType !== 'web-stationGroup'" v-model="wsIdObj.stationId" style="width: 200px;"></el-input>
+        <span v-if="wsType === 'web-stationGroup'">站点组id：</span>
+        <el-input v-if="wsType === 'web-stationGroup'" v-model="wsIdObj.groupId" style="width: 200px;"></el-input>
+        <el-button type="primary" style="margin-left: 10px;" @click="updateFlag(wsType === 'web-stationGroup' ? 'group' : 'station')">
+          Update
+        </el-button>
+        <el-button type="primary" plain style="margin-left: 10px;" @click="fillMessage">填充消息</el-button>
       </div>
       <div style="display: flex;align-items: flex-start;">
         消息：
@@ -156,8 +164,15 @@ onMounted(() => {
         }
         if (type === 'token' && +code === 200) {
           // token
-          console.log(data, data?.token)
           if (data) token.value = data?.token
+        }
+        if (type === 'station' && +code === 200) {
+          // token
+          if (!data) return
+          const { deviceId, stationId, groupId } = data // productLineId
+          wsIdObj.deviceId = deviceId
+          wsIdObj.stationId = stationId
+          wsIdObj.groupId = groupId
         }
       } catch (e) {
         proxyLoading.value = false
@@ -308,26 +323,42 @@ const token = ref('')
 const wsMockVisible = ref(false)
 const wsType = ref('web-device')
 const ws_data = ref('')
-const labelStr = {
-  'web-device': '设备id',
-  'web-productLine': '站点id',
-  'web-stationGroup': '站点组id',
+const wsIdObj = reactive({
+  deviceId: '',
+  stationId: '',
+  groupId: ''
+})
+const fillMessage = () => {
+  const data = wsType.value === 'web-stationGroup' ? `{}` : `"{}"`
+  const msg = `{
+    "data": ${data},
+    "deviceId": "${wsIdObj.deviceId}",
+    "stationId": "${wsIdObj.stationId}",
+    "stationGroupId": "${wsIdObj.groupId}",
+    "timestamp": "${Date.now()}",
+    "type": "${wsType.value}"
+  }`
+  ws_data.value = msg
 }
-const ws_id = ref(null)
 const openWsMock = () => {
   wsMockVisible.value = true
 }
 const sendWsMock = () => {
   if (!token.value) return ElMessage.warning('请先获取token')
-  if (!ws_id.value) return ElMessage.warning('请先输入相应id')
   if (!ws_data.value) return ElMessage.warning('请先输入要发送的消息')
+  const key = wsType.value === 'web-device' ? 'deviceId' : (wsType.value === 'web-productLine' ? 'stationId' : 'groupId')
+  if (!wsIdObj[key]) return ElMessage.warning('请先输入或者自动获取要发送的设备')
   const data = {
     data: ws_data.value,
-    key: `${wsType.value}:${ws_id.value}`
+    key: `${wsType.value}:${wsIdObj[key]}`
   }
   axios.post(`http://guava.ob.shuyilink.com/mes-netty/message/common/send-async`, data, {
     headers: {
       'Authorization': `${token.value}`
+    }
+  }).then(res => {
+    if (+res.data?.code === 200) {
+      ElMessage.success(`mock推送成功，请在DFS中查看ws消息`)
     }
   })
 }
@@ -335,6 +366,13 @@ const updateToken = () => {
   axios.post(`${apiUrl}/server/api/refreshToken`).then(res => {
     if (+res.data?.code === 200) {
       ElMessage.success(`更新token已发送，在下一次请求中劫持`)
+    }
+  })
+}
+const updateFlag = (key) => {
+  axios.post(`${apiUrl}/server/api/refreshFlag`, { key }).then(res => {
+    if (+res.data?.code === 200) {
+      ElMessage.success(`更新${key}已发送，在下一次请求中劫持`)
     }
   })
 }

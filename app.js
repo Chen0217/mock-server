@@ -4,9 +4,12 @@ const { createProxyMiddleware, responseInterceptor } = require('http-proxy-middl
 const cors = require('cors')
 const fs = require('fs')
 const utils = require('./utils/index')
+const querystring = require('querystring')
 // var bodyParser = require('body-parser')
-const { setTokenFlag, getTokenFlag } = require("./utils/data");
-let temp = 0 // 记录时间
+const { setTokenFlag, getTokenFlag, getFlag, setFlag } = require("./utils/data");
+let tokenTemp = 0 // 记录时间
+let stationTemp = 0
+let groupTemp = 0
 
 var app = express();
 
@@ -37,20 +40,63 @@ Object.keys(singleProxy).forEach(key => {
   app.use(`/api/${key}`, createProxyMiddleware({ target: singleProxy[key].target, changeOrigin: true, pathRewrite: pathRewrite}));
 })
 // 全量代理服务器
+app.use(express.json())
 let proxyUrl
 try {
   proxyUrl = fs.readFileSync(`${__dirname}/public/env.proxy.ip`, 'utf8');
 } catch (err) {
   console.error('读取全量代理配置时出错:', err);
 }
+
+const writeBody = (proxyReq, bodyData) => {
+  proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+  proxyReq.write(bodyData);
+};
 app.use('/api', createProxyMiddleware({ 
   target: proxyUrl,
   changeOrigin: true,
   onProxyReq: function(proxyReq, req, res) {
-    if (Date.now() - temp >= 6 * 60 * 1000 || getTokenFlag()) {
+    // 劫持token
+    if (Date.now() - tokenTemp >= 6 * 60 * 1000 || getTokenFlag()) {
       console.log(`{"type": "token", "code": "200", "data": {"token": "${req.headers?.['authorization']}"}}`);
-      temp = Date.now()
+      tokenTemp = Date.now()
       setTokenFlag(false)
+    }
+    // 劫持req.body
+    // station
+    if (Date.now() - stationTemp >= 6 * 60 * 1000 || getFlag('station')) {
+      if (req.url.includes?.('mes-industrial/industira/message/get')) {
+        const { deviceId, stationId, productLineId } = req.body || {}
+        if (deviceId && stationId) {
+          console.log(`{"type": "station", "code": "200", "data": {"deviceId": "${deviceId}", "stationId": "${stationId}"}}`);
+          stationTemp = Date.now()
+          setFlag('station', false)
+        }
+        if (productLineId && stationId) {
+          console.log(`{"type": "station", "code": "200", "data": {"productLineId": "${productLineId}", "stationId": "${stationId}"}}`);
+          stationTemp = Date.now()
+          setFlag('station', false)
+        }
+      }
+    }
+    // group
+    if (Date.now() - groupTemp >= 6 * 60 * 1000 || getFlag('group')) {
+      if (req.url.includes?.('mes-main-data/web/stationGroupRelation/listBindForDeviceByGroupId')) {
+        const { groupId } = req.body || {}
+        if (groupId) {
+          console.log(`{"type": "station", "code": "200", "data": {"groupId": "${groupId}"}}`);
+          groupTemp = Date.now()
+          setFlag('group', false)
+        }
+      }
+    }
+    // 处理express.json()与http-proxy-middleware冲突
+    const contentType = proxyReq.getHeader('Content-Type');
+    if (contentType && contentType.toString().includes('application/json')) {
+      writeBody(proxyReq, JSON.stringify(req.body));
+    }
+    if (contentType && contentType.toString().includes('application/x-www-form-urlencoded')) {
+      writeBody(proxyReq, querystring.stringify(req.body));
     }
   },
   pathRewrite: {
@@ -58,7 +104,7 @@ app.use('/api', createProxyMiddleware({
   }
 }));
 // 内置服务路由
-app.use(express.json())
+// app.use(express.json())
 app.use('/server', serverRouter);
 
 

@@ -1,5 +1,7 @@
 let flag = {
-  getToken: false
+  getToken: false,
+  station: false,
+  group: false
 }
 
 module.exports = {
@@ -8,5 +10,11 @@ module.exports = {
   },
   setTokenFlag: (boolean) => {
     flag.getToken = boolean
+  },
+  getFlag: (key) => {
+    return flag[key]
+  },
+  setFlag: (key, value) => {
+    flag[key] = value
   }
 }

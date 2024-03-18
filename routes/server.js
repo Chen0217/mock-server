@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const response = require('../utils/response')
-const { setTokenFlag } = require("../utils/data");
+const { setTokenFlag, setFlag } = require("../utils/data");
 const fs = require('fs')
 
 router.get('/global/proxy', async(req, res) => {
@@ -92,6 +92,16 @@ router.post('/api/singleProxy', async (req, res) => {
 router.post('/api/refreshToken', async (req, res) => {
   try {
     setTokenFlag(true)
+    res.json(response.success())
+  }  catch (err) {
+    res.json(response.fail(500, err))
+  }
+})
+
+router.post('/api/refreshFlag', async (req, res) => {
+  try {
+    const { key } = req.body || {}
+    setFlag(key, true)
     res.json(response.success())
   }  catch (err) {
     res.json(response.fail(500, err))
