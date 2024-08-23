@@ -1,13 +1,42 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow } = require('electron')
 const path = require('node:path')
-const { spawn } = require('child_process');
+const { fork } = require('child_process');
 const { ipcMain } = require('electron');
 const fs = require('fs')
+
+// const nodePath = process.execPath;
+const scriptPath = path.join(__dirname, 'server.js')
+
+// userData path
+const envProxyPath = path.join(app.getPath('userData'), 'env.proxy.ip');
+const routerDelPath = path.join(app.getPath('userData'), 'router-delete.json');
+const routerGetPath = path.join(app.getPath('userData'), 'router-get.json');
+const routerPostPath = path.join(app.getPath('userData'), 'router-post.json');
+const routerPutPath = path.join(app.getPath('userData'), 'router-put.json');
+const singleProxyPath = path.join(app.getPath('userData'), 'single-proxy.json');
+// 挂载环境变量
+process.env.envProxyPath = envProxyPath
+process.env.routerDelPath = routerDelPath
+process.env.routerGetPath = routerGetPath
+process.env.routerPostPath = routerPostPath
+process.env.routerPutPath = routerPutPath
+process.env.singleProxyPath = singleProxyPath
+// 检查文件是否存在
+if (!fs.existsSync(envProxyPath)) {
+  // 文件不存在,创建文件
+  fs.writeFileSync(envProxyPath, 'http://guava.ob.shuyilink.com', 'utf8');
+}
+
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) return app.quit()
 
 let mainWindow
 let currentProxyUrl
 function createWindow () {
+
+  const gotTheLock = app.requestSingleInstanceLock();
+  if (!gotTheLock) return app.quit()
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 1000,
@@ -31,18 +60,60 @@ function createWindow () {
 // Some APIs can only be used after this event occurs.
 let nodeProcess
 
-const startNodeProcess = () => {
-  nodeProcess = spawn('node', ['server.js']);
-
-  nodeProcess.stdout.on('data', (data) => {
-    console.log(`🐛🐛🐛 Node.js Server Output: ${data}`);
-    mainWindow && mainWindow.webContents?.send('message-to-renderer', data.toString());
-  });
-
-  nodeProcess.on('close', (code) => {
-    console.log(`🐛🐛🐛 Node.js Server exited with code ${code}`);
+function forkChildProcess(scriptPath) {
+  return new Promise((resolve, reject) => {
+    try {
+      nodeProcess = fork(scriptPath);
+      // 其他处理逻辑
+    } catch (err) {
+      console.error('Error starting child process:', err);
+    }
+    nodeProcess.on('error', (err) => {
+      reject(err);
+    });
+    nodeProcess.on('exit', (code, signal) => {
+      if (code !== 0) {
+        reject(new Error(`Child process exited with code ${code} and signal ${signal}`));
+      } else {
+        resolve(nodeProcess);
+      }
+    });
+    nodeProcess.on('message', (data) => {
+      console.log(`🐛🐛🐛 Node.js Server Output: ${data}`);
+      mainWindow && mainWindow.webContents?.send('message-to-renderer', data.toString());
+    });
+  
+    nodeProcess.on('close', (code) => {
+      console.log(`🐛🐛🐛 Node.js Server exited with code ${code}`);
+    });
   });
 }
+
+const startNodeProcess = () => {
+  forkChildProcess(scriptPath)
+    .then(() => {
+      // nodeProcess.on('message', (data) => {
+      //   console.log(`🐛🐛🐛 Node.js Server Output: ${data}`);
+      //   mainWindow && mainWindow.webContents?.send('message-to-renderer', data.toString());
+      // });
+      
+      // nodeProcess.on('error', (err) => {
+      //   console.log(`🐛🐛🐛 Node.js Server error with: ${err}`);
+      // })
+    
+      // nodeProcess.on('close', (code) => {
+      //   console.log(`🐛🐛🐛 Node.js Server exited with code ${code}`);
+      // });
+    })
+}
+
+app.on('second-instance', (event, commandLine, workingDirectory) => {
+  // 当试图运行第二个实例时,我们应该focus到现有窗口
+  if (mainWindow) {
+    if (mainWindow.isMinimized()) mainWindow.restore();
+    mainWindow.focus();
+  }
+});
 
 app.whenReady().then(() => {
   createWindow()
@@ -81,7 +152,10 @@ ipcMain.on('change-proxy-ip', (event, message) => {
   currentProxyUrl = message
   // 替换proxyUrl
   try {
-    fs.writeFileSync(`${__dirname}/public/env.proxy.ip`, message, 'utf8');
+    console.log("🚀sy ~ ipcMain.on ~ message:", message)
+    // fs.writeFileSync(`${__dirname}/public/env.proxy.ip`, message, 'utf8');
+    fs.writeFileSync(envProxyPath, message, 'utf8');
+    console.log("🚀sy ~ ipcMain.on ~ fs.readFileSync(envProxyPath, 'utf8');:", fs.readFileSync(envProxyPath, 'utf8'))
   } catch (err) {
     console.error('写文件时出错:', err);
   }

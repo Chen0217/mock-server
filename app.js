@@ -43,7 +43,8 @@ Object.keys(singleProxy).forEach(key => {
 app.use(express.json())
 let proxyUrl
 try {
-  proxyUrl = fs.readFileSync(`${__dirname}/public/env.proxy.ip`, 'utf8');
+  // proxyUrl = fs.readFileSync(`${__dirname}/public/env.proxy.ip`, 'utf8');
+  proxyUrl = fs.readFileSync(process.env.envProxyPath, 'utf8');
 } catch (err) {
   console.error('读取全量代理配置时出错:', err);
 }
@@ -127,6 +128,10 @@ app.use(function(err, req, res, next) {
 }); 
 
 // success
-console.log(`{"type": "event", "code": "200", "data": {"proxyUrl": "${proxyUrl}"}}`);
+// console.log(`{"type": "event", "code": "200", "data": {"proxyUrl": "${proxyUrl}"}}`);
+setTimeout(() => {
+  console.log("🚀sy ~ setTimeout ~ process: 子进程告诉主进程启动成功")
+  process.send(`{"type": "event", "code": "200", "data": {"proxyUrl": "${proxyUrl}"}}`)
+}, 100);
 
 module.exports = app;

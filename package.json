@@ -7,6 +7,7 @@
     "dev": "electron main.js",
     "start": "electron-forge start",
     "package": "electron-forge package",
+    "build": "electron-builder",
     "make": "electron-forge make"
   },
   "repository": "https://github.com/chen0217/mock-server",
@@ -17,6 +18,25 @@
     "tutorial",
     "demo"
   ],
+  "electron": {
+    "packager": {
+      "extraResource": [
+        "public/*"
+      ]
+    }
+  },
+  "build": {
+    "appId": "com.mock.server.app",
+    "productName": "mockServer",
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "buildResources": "resources"
+    }
+  },
   "author": "GitHub",
   "license": "CC0-1.0",
   "devDependencies": {
@@ -26,9 +46,10 @@
     "@electron-forge/maker-squirrel": "^6.4.2",
     "@electron-forge/maker-zip": "^6.4.2",
     "@electron-forge/plugin-auto-unpack-natives": "^6.4.2",
-    "electron": "^27.0.2",
     "body-parser": "^1.20.0",
     "cors": "^2.8.5",
+    "electron": "^27.0.2",
+    "electron-builder": "^24.13.3",
     "express": "^4.18.2",
     "http-proxy-middleware": "^2.0.6"
   },

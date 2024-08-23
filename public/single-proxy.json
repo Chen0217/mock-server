@@ -1,6 +1,18 @@
 {
   "mes-manufacture-report": {
-    "target": "http://172.29.2.109:9111",
+    "target": "http://192.168.128.178:9111",
+    "open": false
+  },
+  "mes-produce-process": {
+    "target": "http://172.29.0.129:9108",
+    "open": false
+  },
+  "mes-upms": {
+    "target": "http://172.29.0.242:9112",
+    "open": false
+  },
+  "mes-warehouse": {
+    "target": "http://192.168.128.178:9106",
     "open": false
   }
 }

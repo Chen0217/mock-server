@@ -6,7 +6,8 @@ const fs = require('fs')
 
 router.get('/global/proxy', async(req, res) => {
   try {
-    const proxyUrl  = fs.readFileSync(`${__dirname}/../public/env.proxy.ip`, 'utf8');
+    // const proxyUrl  = fs.readFileSync(`${__dirname}/../public/env.proxy.ip`, 'utf8');
+    const proxyUrl  = fs.readFileSync(process.env.envProxyPath, 'utf8');
     res.json(response.success(proxyUrl))
   } catch (err) {
     res.json(response.fail(500, err))
