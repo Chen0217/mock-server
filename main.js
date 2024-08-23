@@ -23,10 +23,12 @@ process.env.routerPostPath = routerPostPath
 process.env.routerPutPath = routerPutPath
 process.env.singleProxyPath = singleProxyPath
 // 检查文件是否存在
-if (!fs.existsSync(envProxyPath)) {
-  // 文件不存在,创建文件
-  fs.writeFileSync(envProxyPath, 'http://guava.ob.shuyilink.com', 'utf8');
-}
+if (!fs.existsSync(envProxyPath)) fs.writeFileSync(envProxyPath, 'http://guava.ob.shuyilink.com', 'utf8');
+if (!fs.existsSync(routerDelPath)) fs.writeFileSync(routerDelPath, '{}', 'utf8');
+if (!fs.existsSync(routerGetPath)) fs.writeFileSync(routerGetPath, '{}', 'utf8');
+if (!fs.existsSync(routerPostPath)) fs.writeFileSync(routerPostPath, '{}', 'utf8');
+if (!fs.existsSync(routerPutPath)) fs.writeFileSync(routerPutPath, '{}', 'utf8');
+if (!fs.existsSync(singleProxyPath)) fs.writeFileSync(singleProxyPath, '{}', 'utf8');
 
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) return app.quit()
@@ -133,6 +135,14 @@ app.whenReady().then(() => {
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit()
 })
+
+app.on('will-quit', () => {
+  // 终止子进程
+  if (nodeProcess) {
+    nodeProcess.kill('SIGINT'); // 终止现有子进程
+  }
+});
+
 // 关闭子进程  nodeProcess.kill('SIGTERM'); // 或者使用 'SIGINT' 信号
 // 根据 nodeProcess.exitCode === null 判断进程是否活跃
 const restartNodeProcess = () => {
@@ -173,10 +183,10 @@ ipcMain.on('api-mock-reset', (event, message) => {
             "data": "ok"
         }
       }
-      fs.writeFileSync(`${__dirname}/public/router-post.json`, JSON.stringify(data, null, 2), 'utf8');
-      fs.writeFileSync(`${__dirname}/public/router-get.json`, JSON.stringify({}, null, 2), 'utf8');
-      fs.writeFileSync(`${__dirname}/public/router-put.json`, JSON.stringify({}, null, 2), 'utf8');
-      fs.writeFileSync(`${__dirname}/public/router-delete.json`, JSON.stringify({}, null, 2), 'utf8');
+      fs.writeFileSync(routerPostPath, JSON.stringify(data, null, 2), 'utf8');
+      fs.writeFileSync(routerGetPath, JSON.stringify({}, null, 2), 'utf8');
+      fs.writeFileSync(routerPutPath, JSON.stringify({}, null, 2), 'utf8');
+      fs.writeFileSync(routerDelPath, JSON.stringify({}, null, 2), 'utf8');
       restartNodeProcess()
     }  catch (err) {
       console.error('写文件时出错:', err);
@@ -187,6 +197,7 @@ ipcMain.on('api-mock-reset', (event, message) => {
 ipcMain.on('api-mock-restart', (event, message) => {
   if (message) restartNodeProcess()
 })
+
 
 // 修改接口消息 get post
 // 重置

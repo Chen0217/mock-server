@@ -13,7 +13,7 @@ let timer = (delay) => {
 
 /** -------------------------------- mock api --------------------------------- */
 
-fs.readFile(`${__dirname}/../public/router-post.json`, 'utf8', (err, data) => {
+fs.readFile(process.env.routerPostPath, 'utf8', (err, data) => {
   if (err) {
     console.error('读取文件时发生错误:', err)
     return
@@ -31,7 +31,7 @@ fs.readFile(`${__dirname}/../public/router-post.json`, 'utf8', (err, data) => {
   }
 });
 
-fs.readFile(`${__dirname}/../public/router-get.json`, 'utf8', (err, data) => {
+fs.readFile(process.env.routerGetPath, 'utf8', (err, data) => {
   if (err) {
     console.error('读取文件时发生错误:', err)
     return
@@ -49,7 +49,7 @@ fs.readFile(`${__dirname}/../public/router-get.json`, 'utf8', (err, data) => {
   }
 });
 
-fs.readFile(`${__dirname}/../public/router-put.json`, 'utf8', (err, data) => {
+fs.readFile(process.env.routerPutPath, 'utf8', (err, data) => {
   if (err) {
     console.error('读取文件时发生错误:', err)
     return
@@ -67,7 +67,7 @@ fs.readFile(`${__dirname}/../public/router-put.json`, 'utf8', (err, data) => {
   }
 });
 
-fs.readFile(`${__dirname}/../public/router-delete.json`, 'utf8', (err, data) => {
+fs.readFile(process.env.routerDelPath, 'utf8', (err, data) => {
   if (err) {
     console.error('读取文件时发生错误:', err)
     return

@@ -4,6 +4,13 @@ const response = require('../utils/response')
 const { setTokenFlag, setFlag } = require("../utils/data");
 const fs = require('fs')
 
+function getPath(method) {
+  if (method === 'post') return process.env.routerPostPath
+  if (method === 'put') return process.env.routerPutPath
+  if (method === 'get') return process.env.routerGetPath
+  if (method === 'delete') return process.env.routerDelPath
+}
+
 router.get('/global/proxy', async(req, res) => {
   try {
     // const proxyUrl  = fs.readFileSync(`${__dirname}/../public/env.proxy.ip`, 'utf8');
@@ -16,10 +23,10 @@ router.get('/global/proxy', async(req, res) => {
 
 router.get('/apiList', async (req, res) => {
   try {
-    const apiJsonPost  = fs.readFileSync(`${__dirname}/../public/router-post.json`, 'utf8');
-    const apiJsonGet  = fs.readFileSync(`${__dirname}/../public/router-get.json`, 'utf8');
-    const apiJsonPut  = fs.readFileSync(`${__dirname}/../public/router-put.json`, 'utf8');
-    const apiJsonDelete  = fs.readFileSync(`${__dirname}/../public/router-delete.json`, 'utf8');
+    const apiJsonPost  = fs.readFileSync(process.env.routerPostPath, 'utf8');
+    const apiJsonGet  = fs.readFileSync(process.env.routerGetPath, 'utf8');
+    const apiJsonPut  = fs.readFileSync(process.env.routerPutPath, 'utf8');
+    const apiJsonDelete  = fs.readFileSync(process.env.routerDelPath, 'utf8');
     const apiMapPost = JSON.parse(apiJsonPost)
     const apiMapGet = JSON.parse(apiJsonGet)
     const apiMapPut = JSON.parse(apiJsonPut)
@@ -61,10 +68,11 @@ router.get('/apiList', async (req, res) => {
 router.post('/api/add', async (req, res) => {
   try {
     const { method, responseMap, url } = req.body || {}
-    const apiJson  = fs.readFileSync(`${__dirname}/../public/router-${method}.json`, 'utf8');
+    const path = getPath(method)
+    const apiJson  = fs.readFileSync(path, 'utf8');
     const JSONApi = JSON.parse(apiJson)
     JSONApi[url] = responseMap
-    fs.writeFileSync(`${__dirname}/../public/router-${method}.json`, JSON.stringify(JSONApi, null, 2), 'utf8');
+    fs.writeFileSync(path, JSON.stringify(JSONApi, null, 2), 'utf8');
     res.json(response.success())
   }  catch (err) {
     res.json(response.fail(500, err))
@@ -73,7 +81,7 @@ router.post('/api/add', async (req, res) => {
 
 router.get('/api/singleProxy', async(req, res) => {
   try {
-    const singleProxy  = fs.readFileSync(`${__dirname}/../public/single-proxy.json`, 'utf8');
+    const singleProxy  = fs.readFileSync(process.env.singleProxyPath, 'utf8');
     const singleProxyMap = JSON.parse(singleProxy)
     res.json(response.success(singleProxyMap))
   } catch (err) {
@@ -83,7 +91,7 @@ router.get('/api/singleProxy', async(req, res) => {
 router.post('/api/singleProxy', async (req, res) => {
   try {
     const { singleProxyMap } = req.body || {}
-    fs.writeFileSync(`${__dirname}/../public/single-proxy.json`, JSON.stringify(singleProxyMap, null, 2), 'utf8');
+    fs.writeFileSync(process.env.singleProxyPath, JSON.stringify(singleProxyMap, null, 2), 'utf8');
     res.json(response.success())
   }  catch (err) {
     res.json(response.fail(500, err))

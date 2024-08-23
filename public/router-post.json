@@ -4,5 +4,6 @@
     "code": "200",
     "message": "success",
     "data": "ok"
-  }
+  },
+  "/mes-upms/sysResource/web/list": {}
 }

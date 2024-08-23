@@ -24,7 +24,7 @@ app.use('/api', mockRouter);
 // 单个服务代理
 let singleProxy = {}
 try {
-  singleProxy = JSON.parse(fs.readFileSync(`${__dirname}/public/single-proxy.json`, 'utf8'))
+  singleProxy = JSON.parse(fs.readFileSync(process.env.singleProxyPath, 'utf8'))
 } catch (err) {
   console.error('读取单服务代理配置时出错:', err);
   singleProxy = {}
