@@ -59,7 +59,7 @@ app.use('/api', createProxyMiddleware({
   onProxyReq: function(proxyReq, req, res) {
     // 劫持token
     if (Date.now() - tokenTemp >= 6 * 60 * 1000 || getTokenFlag()) {
-      console.log(`{"type": "token", "code": "200", "data": {"token": "${req.headers?.['authorization']}"}}`);
+      process.send(`{"type": "token", "code": "200", "data": {"token": "${req.headers?.['authorization']}"}}`);
       tokenTemp = Date.now()
       setTokenFlag(false)
     }
@@ -69,12 +69,12 @@ app.use('/api', createProxyMiddleware({
       if (req.url.includes?.('mes-industrial/industira/message/get')) {
         const { deviceId, stationId, productLineId } = req.body || {}
         if (deviceId && stationId) {
-          console.log(`{"type": "station", "code": "200", "data": {"deviceId": "${deviceId}", "stationId": "${stationId}"}}`);
+          process.send(`{"type": "station", "code": "200", "data": {"deviceId": "${deviceId}", "stationId": "${stationId}"}}`);
           stationTemp = Date.now()
           setFlag('station', false)
         }
         if (productLineId && stationId) {
-          console.log(`{"type": "station", "code": "200", "data": {"productLineId": "${productLineId}", "stationId": "${stationId}"}}`);
+          process.send(`{"type": "station", "code": "200", "data": {"productLineId": "${productLineId}", "stationId": "${stationId}"}}`);
           stationTemp = Date.now()
           setFlag('station', false)
         }
@@ -85,7 +85,7 @@ app.use('/api', createProxyMiddleware({
       if (req.url.includes?.('mes-main-data/web/stationGroupRelation/listBindForDeviceByGroupId')) {
         const { groupId } = req.body || {}
         if (groupId) {
-          console.log(`{"type": "station", "code": "200", "data": {"groupId": "${groupId}"}}`);
+          process.send(`{"type": "station", "code": "200", "data": {"groupId": "${groupId}"}}`);
           groupTemp = Date.now()
           setFlag('group', false)
         }

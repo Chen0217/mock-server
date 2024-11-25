@@ -112,8 +112,8 @@ const startNodeProcess = () => {
 app.on('second-instance', (event, commandLine, workingDirectory) => {
   // 当试图运行第二个实例时,我们应该focus到现有窗口
   if (mainWindow) {
-    if (mainWindow.isMinimized()) mainWindow.restore();
-    mainWindow.focus();
+    if (mainWindow.isMinimized?.()) mainWindow.restore?.();
+    mainWindow.focus?.();
   }
 });
 
