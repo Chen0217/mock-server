@@ -350,7 +350,10 @@ const sendWsMock = () => {
   if (!wsIdObj[key]) return ElMessage.warning('请先输入或者自动获取要发送的设备')
   const data = {
     data: ws_data.value,
-    key: `${wsType.value}:${wsIdObj[key]}`
+    key: `${wsType.value}:${wsIdObj[key]}`,
+    tags: {
+      version: 'all'
+    }
   }
   axios.post(`http://guava.ob.shuyilink.com/mes-netty/message/common/send-async`, data, {
     headers: {
